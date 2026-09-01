@@ -1,6 +1,6 @@
 # STRIDE
 
-Official minimal implementation of **STRIDE: Spatial-Temporal Representation
+Implementation of **STRIDE: Spatial-Temporal Representation
 for Interval-conditioned Disease Evolution in Longitudinal Glioblastoma MRI**.
 STRIDE classifies a pair of post-treatment MRI examinations as **stable disease
 (SD), pseudoprogression (PsP), or true progression (TP)** while explicitly
