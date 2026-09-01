@@ -1,0 +1,65 @@
+task: lumiere
+seed: 42
+device: auto
+
+data:
+  manifest: data/lumiere_pairs.csv
+  patient_column: patient_id
+  split_column: split
+  label_column: next_rano_id
+  class_names: [PD, SD, PR, CR, PRE_OP, POST_OP, UNKNOWN]
+  modality_names: [t1ce, t1, t2, flair]
+  modality_columns:
+    - ["{prefix}_ct1_ss_path", "{prefix}_ct1_path"]
+    - ["{prefix}_t1_ss_path", "{prefix}_t1_path"]
+    - ["{prefix}_t2_ss_path", "{prefix}_t2_path"]
+    - ["{prefix}_flair_ss_path", "{prefix}_flair_path"]
+  lesion_prior_columns:
+    - "{prefix}_deep_seg_path"
+    - "{prefix}_hdglio_seg_path"
+  target_shape: [128, 128, 128]
+  target_spacing: [1.25, 1.25, 1.25]
+  allow_missing_modalities: false
+  augment: true
+  intensity_scale_range: [0.9, 1.1]
+  intensity_shift_range: [-0.1, 0.1]
+  intensity_noise_std: 0.03
+
+model:
+  num_modalities: 4
+  stem_channels: 12
+  input_dropout: 0.08
+  embed_dim: 96
+  depths: [2, 2, 2, 2]
+  num_heads: [3, 6, 12, 24]
+  patch_size: 4
+  attention_window_size: 8
+  localization_scales: [1, 2, 4]
+  localization_hidden_channels: 24
+  mlp_ratio: 4.0
+  dropout: 0.1
+  drop_path: 0.15
+  use_checkpoint: true
+  time_embedding_dim: 64
+  time_frequencies: 8
+  max_weeks: 52.0
+  context_dim: 192
+  dynamics_hidden_dim: 384
+  fusion_heads: 8
+  fusion_depth: 1
+  refinement_dim: 384
+  num_lumiere_classes: 7
+  num_burdenko_classes: 3
+
+train:
+  output_dir: runs/lumiere_pretrain
+  batch_size: 8
+  num_workers: 4
+  epochs: 300
+  learning_rate: 0.0001
+  weight_decay: 0.0001
+  grad_clip: 1.0
+  selection_metric: macro_auc
+  transition_weight: 0.25
+  direction_weight: 0.1
+  amp: true
